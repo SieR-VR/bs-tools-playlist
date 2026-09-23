@@ -54,11 +54,9 @@ async def _publish_playlist(
     filename: str,
     title: str,
     entries: list,
-    template_path: str,
-    cover_text: str,
-    font_path: str,
+    make_image,
 ) -> dict:
-    image_uri = await asyncio.to_thread(cover.cover_data_uri, template_path, cover_text, font_path)
+    image_uri = await asyncio.to_thread(make_image)
     payload = {
         "customData": {"syncURL": uploader.url(filename)},
         "playlistTitle": title,
@@ -104,15 +102,12 @@ async def run_generation(settings, uploader, progress=None) -> dict:
             entries = [_song_entry(lb) for lb in buckets]
             if progress:
                 progress(f"{label}: 정렬·커버·업로드 중 ({len(entries)}맵)")
-            template = os.path.join(templates, f"s{min(star, 14):02d}.png")
             item = await _publish_playlist(
                 uploader=uploader,
                 filename=f"ranked_star_{star:02d}.bplist",
                 title=f"ranked_star_{star:02d}",
                 entries=entries,
-                template_path=template,
-                cover_text=str(star),
-                font_path=font_path,
+                make_image=lambda star=star: cover.number_cover_data_uri(templates, star, font_path),
             )
             result["playlists"].append(item)
             log.info("uploaded %s (%s songs)", item["title"], item["songs"])
@@ -144,9 +139,9 @@ async def run_generation(settings, uploader, progress=None) -> dict:
                 filename="ranked_star_qualified.bplist",
                 title="ranked_star_qualified",
                 entries=entries,
-                template_path=os.path.join(templates, "qualified.png"),
-                cover_text="Q",
-                font_path=font_path,
+                make_image=lambda: cover.special_cover_data_uri(
+                    os.path.join(templates, "qualified.png"), "Q", font_path
+                ),
             )
             result["playlists"].append(item)
             log.info("uploaded qualified (%s songs)", item["songs"])
