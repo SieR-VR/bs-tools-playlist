@@ -83,6 +83,25 @@ python -m venv .venv
 .venv\Scripts\python -m app.run                          # 실제 실행 (R2 환경변수 필요)
 ```
 
+## 난이도 확장 스크립트 (expand)
+
+이미 만들어진 플레이리스트를 입력받아 **모든 곡을 모든 랭크 난이도로 확장**한 뒤
+별 오름차순으로 정렬한 새 플레이리스트를 만듭니다 (언랭크 난이도는 별이 없어 제외되고 개수가 로그에 표시됨).
+
+```powershell
+# 로컬 파일
+python -m app.expand out\ranked_star_02.bplist
+# → out\ranked_star_02_alldiff.bplist (커버·작성자 유지, syncURL 제거)
+
+# R2/URL의 플레이리스트를 받아서 확장 + 결과도 R2에 업로드
+python -m app.expand https://<R2 공개 URL>/playlists/ranked_star_05.bplist --upload
+
+# 옵션: -o 출력 경로, --title 제목, --desc 별 내림차순, --delay 요청 간격
+```
+
+같은 곡의 여러 난이도가 각각 별점 순으로 전체 목록에 삽입되므로 (곡끼리 모이지 않고)
+쉬운 것부터 어려운 것으로 이어지는 연습용 흐름이 됩니다.
+
 ## 크레딧
 
 - [jundoll/bs-ranked-playlist](https://github.com/jundoll/bs-ranked-playlist) (MIT) — 플레이리스트 구성 로직과 커버 플레이트 디자인/템플릿 원형

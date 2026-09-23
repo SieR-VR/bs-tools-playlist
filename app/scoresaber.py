@@ -39,6 +39,12 @@ class ScoreSaberClient:
             await asyncio.sleep(wait)
         raise RuntimeError(f"ScoreSaber 요청 실패 ({path}): {last_error}")
 
+    async def get_difficulties(self, song_hash: str) -> list:
+        return await self._get(f"/leaderboard/get-difficulties/{song_hash.upper()}", {})
+
+    async def get_leaderboard_info_by_id(self, leaderboard_id) -> dict:
+        return await self._get(f"/leaderboard/by-id/{int(leaderboard_id)}/info", {})
+
     async def fetch_leaderboards(
         self,
         *,
