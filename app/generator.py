@@ -104,7 +104,7 @@ async def run_generation(settings, uploader, progress=None) -> dict:
                 progress(f"{label}: 정렬·커버·업로드 중 ({len(entries)}맵)")
             item = await _publish_playlist(
                 uploader=uploader,
-                filename=f"Scoresaber_Ranked_{star:02d}_Star.bplist",
+                filename=f"ranked_star_{star:02d}.bplist",
                 title=f"Scoresaber Ranked {star:02d} Star",
                 entries=entries,
                 make_image=lambda star=star: cover.number_cover_data_uri(templates, star, font_path),
