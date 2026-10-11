@@ -13,9 +13,10 @@
 | 같은 곡의 여러 난이도 | 리더보드 ID 기준 중복 제거라서 한 플레이리스트에 공존 | 동일하게 유지 |
 | 커버 숫자 폰트 | (원본 서체) | **SB Aggro Bold** |
 
-플레이리스트 구성은 원본과 동일: `ranked_star_00` ~ `ranked_star_14` (별 정수 구간별) + `ranked_star_qualified`.
-`MAX_STAR`(기본 16)까지 자동 확장하며, 맵이 없는 별 구간과 현재 맵이 없는 qualified는
-파일을 만들지 않고 건너뜁니다 (2026-09 기준 ScoreSaber에 qualified 상태 맵이 없음).
+플레이리스트는 별 정수 구간별로 `Scoresaber_Ranked_00_Star.bplist` ~
+`Scoresaber_Ranked_14_Star.bplist` 형식으로 생성됩니다. 파일 내부 제목도
+`Scoresaber Ranked 00 Star` 형식을 사용하며, `MAX_STAR`(기본 16)까지 자동 확장합니다.
+맵이 없는 별 구간은 파일을 만들지 않고 건너뜁니다.
 
 ## 동작 구조
 
@@ -90,11 +91,11 @@ python -m venv .venv
 
 ```powershell
 # 로컬 파일
-python -m app.expand out\ranked_star_02.bplist
-# → out\ranked_star_02_alldiff.bplist (커버·작성자 유지, syncURL 제거)
+python -m app.expand out\Scoresaber_Ranked_02_Star.bplist
+# → out\Scoresaber_Ranked_02_Star_alldiff.bplist (커버·작성자 유지, syncURL 제거)
 
 # R2/URL의 플레이리스트를 받아서 확장 + 결과도 R2에 업로드
-python -m app.expand https://<R2 공개 URL>/playlists/ranked_star_05.bplist --upload
+python -m app.expand https://<R2 공개 URL>/playlists/Scoresaber_Ranked_05_Star.bplist --upload
 
 # 옵션: -o 출력 경로, --title 제목, --desc 별 내림차순, --delay 요청 간격
 ```
