@@ -49,7 +49,6 @@ class ScoreSaberClient:
         self,
         *,
         ranked: bool = False,
-        qualified: bool = False,
         min_star: float = None,
         max_star: float = None,
         category: int = None,
@@ -59,8 +58,6 @@ class ScoreSaberClient:
         params = {}
         if ranked:
             params["ranked"] = "true"
-        if qualified:
-            params["qualified"] = "true"
         if min_star is not None and min_star >= 0:
             params["minStar"] = str(min_star)
         if max_star is not None and max_star >= 0:

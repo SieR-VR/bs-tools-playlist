@@ -95,7 +95,7 @@ async def run_generation(settings, uploader, progress=None) -> dict:
             )
             buckets = [lb for lb in _dedup_by_id(leaderboards) if int(_stars(lb)) == star]
             if not buckets:
-                result["skipped"].append({"title": f"ranked_star_{star:02d}", "reason": "해당 별 구간에 랭크맵 없음"})
+                result["skipped"].append({"title": f"Scoresaber Ranked {star:02d} Star", "reason": "해당 별 구간에 랭크맵 없음"})
                 log.info("skip star %s (no maps)", star)
                 continue
             buckets.sort(key=_sort_key, reverse=settings.sort_desc)
@@ -104,47 +104,13 @@ async def run_generation(settings, uploader, progress=None) -> dict:
                 progress(f"{label}: 정렬·커버·업로드 중 ({len(entries)}맵)")
             item = await _publish_playlist(
                 uploader=uploader,
-                filename=f"ranked_star_{star:02d}.bplist",
-                title=f"ranked_star_{star:02d}",
+                filename=f"Scoresaber_Ranked_{star:02d}_Star.bplist",
+                title=f"Scoresaber Ranked {star:02d} Star",
                 entries=entries,
                 make_image=lambda star=star: cover.number_cover_data_uri(templates, star, font_path),
             )
             result["playlists"].append(item)
             log.info("uploaded %s (%s songs)", item["title"], item["songs"])
-
-        label = "qualified"
-
-        def on_page_q(expected, page, collected, label=label):
-            if progress:
-                progress(f"{label}: 페이지 {page}/{expected or '?'} (수집 {collected})")
-
-        qualified = _dedup_by_id(
-            await client.fetch_leaderboards(
-                qualified=True,
-                category=4,
-                sort=1,
-                progress=on_page_q,
-            )
-        )
-        if not qualified:
-            result["skipped"].append({"title": "ranked_star_qualified", "reason": "현재 qualified 맵 없음 (ScoreSaber 상태)"})
-            log.info("skip qualified (no maps)")
-        else:
-            qualified.sort(key=_sort_key, reverse=settings.sort_desc)
-            entries = [_song_entry(lb) for lb in qualified]
-            if progress:
-                progress(f"qualified: 정렬·커버·업로드 중 ({len(entries)}맵)")
-            item = await _publish_playlist(
-                uploader=uploader,
-                filename="ranked_star_qualified.bplist",
-                title="ranked_star_qualified",
-                entries=entries,
-                make_image=lambda: cover.special_cover_data_uri(
-                    os.path.join(templates, "qualified.png"), "Q", font_path
-                ),
-            )
-            result["playlists"].append(item)
-            log.info("uploaded qualified (%s songs)", item["songs"])
     finally:
         await client.aclose()
     return result
